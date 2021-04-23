@@ -1,0 +1,99 @@
+include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+int button=13;
+int LED=10;
+int flag=0;
+int photosensor=A1;
+int LEDbrightness;
+int temperatureSensor=A0;
+char str[10];
+void setup()
+{
+  lcd.begin(16, 2);
+  pinMode(photosensor,INPUT);
+  pinMode(temperatureSensor,INPUT);
+  pinMode(button,INPUT);
+  pinMode(LED,OUTPUT);
+  Serial.begin(9600);
+  
+}
+
+void loop()
+{
+  int buttonState=digitalRead(button);
+  float temperature=(analogRead(temperatureSensor)*5.0/1024-0.5)/0.01;
+  int lightSensor=analogRead(photosensor);
+  
+  if (lightSensor>=70)
+    analogWrite(LED,255);
+  else
+    analogWrite(LED,0);
+  //analogWrite(LED,LEDbrightness);
+  //Serial.Println(lightSensor);
+  \
+  //Serial.Println(buttonState);
+  if (buttonState==HIGH){
+  	flag++;
+    lcd.clear();
+    delay(100);
+    //Serial.println(flag);
+    lcd.setCursor(0,0);
+    if (flag%4==1){
+   	  lcd.print("Temperature (oC)");
+      lcd.setCursor(0,1);
+      lcd.print(temperature);
+    }
+    else if (flag%4==2){
+      lcd.print("Light intensity");
+      lcd.setCursor(0,1);
+      lcd.print(lightSensor);
+    }
+    else if (flag%4==3){
+      lcd.print("Light state");
+      lcd.setCursor(0,1);
+      if (lightSensor>=70)
+        lcd.print("Bright");
+      else
+        lcd.print("Dark")
+    }
+  	else{
+      lcd.print("Irwandi Refraugati");
+      lcd.setCursor(0,1);
+      lcd.print("1913010113")
+    }
+    delay(100);
+  }
+  else{
+    if (flag%4==1){
+    	float newTemp=(analogRead(temperatureSensor)*5.0/1024-0.5)/0.01;
+      	if (newTemp!=temperature){
+          	lcd.clear();
+          	lcd.print("Temperature (oC)");
+          	lcd.setCursor(0,1);
+          	lcd.print(newTemp);
+        }
+  	}
+    else if (flag%4==2){
+    	int newLight=analogRead(photosensor);
+      	if (newTemp!=temperature){
+          	lcd.clear();
+          	lcd.print("Light intensity");
+          	lcd.setCursor(0,1);
+          	lcd.print(newLight);
+        }
+    }
+    else if (flag%4==3){
+    	int newLight=analogRead(photosensor);
+      	if (newLight!=LightSensor){
+          	lcd.clear();
+          	lcd.print("LED state");
+          	lcd.setCursor(0,1);
+          	if (newLight>=70)
+              	lcd.print("Bright");
+          	else
+              	lcd.print("Dark");
+        }
+    }
+  }
+}
